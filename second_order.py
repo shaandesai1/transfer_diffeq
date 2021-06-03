@@ -74,29 +74,19 @@ def train_methods(systems_dict,system_type,epochs):
 
 #corpus of training diffeqs
 DIFFEQS_TRAIN = {
-    'exp': lambda u, t: [diff(u, t) + u],
-    'exp1': lambda u, t: [diff(u, t) - u],
-    'tanh': lambda u, t: [diff(u, t) + u ** 2 - 1],
-    # 'psig': lambda u, t: [diff(u, t) - 3 * u + u ** 2],
-    # 'r1': lambda u, t: [diff(u, t) - u + u ** 2 + u ** 3],
-    # 'r2': lambda u, t: [diff(u, t) + u + u ** 2],
-    # 'r3': lambda u, t: [diff(u, t) + u ** 2],
-    # 'r4': lambda u, t: [diff(u, t) - u ** 2],
-    # 'q1': lambda u, t: [diff(u, t) - u + u ** 2],
-    # 'q2': lambda u, t: [diff(u, t) - u + u ** 2 - u ** 3],
-    # 'q3': lambda u, t: [diff(u, t) + u ** 2 + u ** 4],
-    # 'q4': lambda u, t: [diff(u, t) - u ** 2 - u ** 4],
-    # 'high_order1': lambda u, t: [diff(u, t) + u - u ** 2 + u ** 3 - u ** 4 + u ** 5],
-    # 'high_order2': lambda u, t: [diff(u, t) - u + u ** 2 - u ** 3 + u ** 4 - u ** 5],
-    'baseline': lambda u, t: [diff(u,t)]
+    't1': lambda u, t: [diff(u, t,ord=2) + u],
+    't2': lambda u, t: [diff(u, t,ord=2) - u],
+    't3': lambda u, t: [diff(u, t,ord=2) + u ** 2 - 1],
+    't4': lambda u, t: [diff(u, t, ord=2) -u + u ** 2 - 1],
+    'baseline': lambda u, t: [diff(u,t,ord=2)]
 }
 
 #train all the keys (MAXEPS)
 SOLUTIONS_TRAIN,MODELS_TRAIN = train_methods(DIFFEQS_TRAIN,'train',MAX_EPOCHS)
 
 DIFFEQS_TEST = {
-    'q1': lambda u, t: [diff(u, t) - u + u ** 2],
-    'q2': lambda u, t: [diff(u, t) - u + u ** 2 - u ** 3],
+    'q1': lambda u, t: [diff(u, t,ord=2) - u + u ** 2],
+    'q2': lambda u, t: [diff(u, t,ord=2) - u + u ** 2 - u ** 3],
     # 'q3': lambda u, t: [diff(u, t) + u ** 2 + u ** 4],
     # 'q4': lambda u, t: [diff(u, t) - u ** 2 - u ** 4],
 }

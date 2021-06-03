@@ -42,9 +42,9 @@ def train_methods(systems_dict, system_type, epochs):
     WEIGHTS = {}
 
     # MODELS = {}
-    for system_name, system in systems_dict.items():
+    for system_name, (system,INIT_VAL) in systems_dict.items():
         # define the baseline network
-        NETS = [FCNN(n_input_units=1, n_output_units=1, hidden_units=[10, 10])]
+        NETS = [FCNN(n_input_units=1, n_output_units=1,hidden_units=[30,30])]
         # call the dy/dweights (integrated over the inputs)
         # cb = PeriodLocal(period=SUB_RATE)
         # wcb = WeightCallback(f'{system_name}_{system_type}', ts)
@@ -118,30 +118,18 @@ def train_methods(systems_dict, system_type, epochs):
 
 # corpus of training diffeqs
 DIFFEQS_TRAIN = {
-    'exp': lambda u, t: [diff(u, t) + u],
-    'exp1': lambda u, t: [diff(u, t) - u],
-    'tanh': lambda u, t: [diff(u, t) + u ** 2 - 1],
-    'sigmoid': lambda u, t: [diff(u, t) + u ** 2 - u],
-    'newt_cool': lambda u, t: [diff(u, t) - 3 * (5 - u)],
-    'cubic': lambda u, t: [diff(u, t) - t ** 2 - 1],
-    # 'r1': lambda u, t: [diff(u, t) - u - t * torch.exp(t)],
-    # 'r2': lambda u, t: [diff(u, t) - 2 * u - t],
-    'baseline': lambda u, t: [diff(u, t)]
+    'tanh': [lambda u, t: [diff(u, t) + u ** 2 - 1],[IVP(t_0=0.0, u_0=0.5)]],
+    'sigmoid': [lambda u, t: [diff(u, t) + u ** 2 - u],[IVP(t_0=0.0, u_0=0.5)]],
+    'sigmoid1': [lambda u, t: [diff(u, t) + u ** 2 - u],[IVP(t_0=0.0, u_0=0.45)]],
 }
 
 # train all the keys (MAXEPS)
 SOLUTIONS_TRAIN, WEIGHTS_TRAIN, DYDW_TRAIN, DYDX_TRAIN = train_methods(DIFFEQS_TRAIN, 'train', MAX_EPOCHS)
 
 DIFFEQS_TEST = {
-    'exp': lambda u, t: [diff(u, t) + u],
-    'exp1': lambda u, t: [diff(u, t) - u],
-    'tanh': lambda u, t: [diff(u, t) + u ** 2 - 1],
-    'sigmoid': lambda u, t: [diff(u, t) + u ** 2 - u],
-    'newt_cool': lambda u, t: [diff(u, t) - 3 * (5 - u)],
-    'cubic': lambda u, t: [diff(u, t) - t ** 2 - 1],
-    # 'r1': lambda u, t: [diff(u, t) - u - t * torch.exp(t)],
-    # 'r2': lambda u, t: [diff(u, t) - 2 * u - t],
-    'baseline': lambda u, t: [diff(u, t)]
+    'tanh': [lambda u, t: [diff(u, t) + u ** 2 - 1],[IVP(t_0=0.0, u_0=0.5)]],
+    'sigmoid': [lambda u, t: [diff(u, t) + u ** 2 - u],[IVP(t_0=0.0, u_0=0.5)]],
+    'sigmoid1': [lambda u, t: [diff(u, t) + u ** 2 - u],[IVP(t_0=0.0, u_0=0.45)]],
 }
 
 # train all the queries (500 epochs)
@@ -230,7 +218,7 @@ for epoch_values in [100, 200, 500]:
 
         # plt.show()
     plt.tight_layout()
-    plt.savefig(f'L2_{epoch_values}.pdf')
+    plt.savefig(f'L2_phase_{epoch_values}.pdf')
 
     errors_pre_gt, errors_train_test = metric_evaluation(PRETRAINED_SOLUTIONS, 'cosine_similarity')
 
@@ -258,7 +246,7 @@ for epoch_values in [100, 200, 500]:
         ax[4, i].set_ylabel('train-test dydw error')
 
     plt.tight_layout()
-    plt.savefig(f'cosine_sim_{epoch_values}.pdf')
+    plt.savefig(f'cosine_phase_sim_{epoch_values}.pdf')
 
 #
 #
